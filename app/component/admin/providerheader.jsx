@@ -54,6 +54,7 @@ export default function ProviderAdminHeader() {
           {/* <Link href="/admin/my-work-provider">My Work</Link> */}
           <Link href="/admin/provider-all-products">My Products</Link>
           <Link href="/admin/provider-my-orders">My Orders</Link>
+          <Link href="/admin/analytics">Analytics</Link>
           <Link href="/admin/edit-provider-profile">Profile</Link>
           
           <ProviderLogoutButton />

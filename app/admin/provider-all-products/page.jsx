@@ -74,6 +74,7 @@ export default function ProviderProductsPage() {
             {products.map((p) => (
               <div
                 // key={p._id}
+                key={p.name}
                 className="bg-white shadow rounded-lg p-4"
               >
 

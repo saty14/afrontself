@@ -31,6 +31,7 @@ export default function ProviderKioskPage() {
   const [paymentStatus, setPaymentStatus] = useState("UnPaid");
   const [successToken, setSuccessToken] = useState(null);
   const [gstTake, setGstTake] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
 
   const LIMIT = 2;
@@ -390,48 +391,476 @@ export default function ProviderKioskPage() {
   //   )
   // }
 
+  // return (
+  //   <div className="min-h-screen bg-gray-100">
+
+  //     {/* HEADER */}
+
+  //     <div className="bg-white shadow sticky top-0 z-30">
+  //       <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
+
+  //         <div>
+  //           <h1 className="text-2xl font-bold">
+  //             {provider?.name || "Provider"}
+  //           </h1>
+
+  //           <p className="text-gray-500 text-sm">
+  //             Self Ordering Kiosk
+  //           </p>
+  //         </div>
+
+  //         <div className="bg-blue-600 text-white px-4 py-2 rounded-full">
+  //           Cart ({cart.length})
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     {/* BODY */}
+
+  //     <div className="max-w-7xl mx-auto p-4 grid md:grid-cols-4 gap-4">
+
+  //       {/* LEFT SIDE */}
+
+  //       <div className="md:col-span-3">
+
+  //         {/* FILTERS */}
+
+  //         <div className="bg-white p-4 rounded-xl shadow mb-4 space-y-4">
+
+  //           {/* SEARCH */}
+
+  //           <input
+  //             type="text"
+  //             placeholder="Search products..."
+  //             className="w-full border p-3 rounded"
+  //             value={search}
+  //             onChange={(e) => {
+  //               setSearch(e.target.value);
+  //               setPage(1);
+  //             }}
+  //           />
+
+  //           {/* DROPDOWNS */}
+
+  //           <div className="grid md:grid-cols-2 gap-4">
+
+  //             {/* CATEGORY */}
+
+  //             <select
+  //               className="border p-3 rounded"
+  //               value={selectedCategory}
+  //               onChange={(e) => {
+  //                 setSelectedCategory(e.target.value);
+  //                 setPage(1);
+  //               }}
+  //             >
+  //               <option value="">
+  //                 All Categories
+  //               </option>
+
+  //               {/* {categories.map((c) => (
+  //                 <option
+  //                   key={c._id}
+  //                   value={c.spcategoryid}
+  //                 >
+  //                   {c.name}
+  //                 </option>
+  //               ))}*/}
+
+
+  //               {categories
+  //                 .filter(
+  //                   (c) =>
+  //                     allowedCategories.length === 0 ||
+  //                     allowedCategories.includes(c.name)
+  //                 )
+  //                 .map((c) => (
+  //                   <option key={c._id} value={c.spcategoryid}>
+  //                     {c.name}
+  //                   </option>
+  //                 ))}
+
+
+  //             </select>
+
+  //             {/* TYPE */}
+
+  //             <select
+  //               className="border p-3 rounded"
+  //               value={selectedType}
+  //               onChange={(e) => {
+  //                 setSelectedType(e.target.value);
+  //                 setPage(1);
+  //               }}
+  //             >
+  //               <option value="">
+  //                 All Types
+  //               </option>
+
+  //               {/* {types.map((t) => (
+  //                 <option
+  //                   key={t._id}
+  //                   value={t.sptypeid}
+  //                 >
+  //                   {t.name}
+  //                 </option>
+  //               ))} */}
+  //               {types
+  //                 .filter(
+  //                   (t) =>
+  //                     allowedTypes.length === 0 ||
+  //                     allowedTypes.includes(t.name)
+  //                 )
+  //                 .map((t) => (
+  //                   <option
+  //                     key={t._id}
+  //                     value={t.sptypeid}
+  //                   >
+  //                     {t.name}
+  //                   </option>
+  //                 ))}
+  //             </select>
+  //           </div>
+  //         </div>
+
+  //         {/* PRODUCTS */}
+
+  //         {loading ? (
+  //           <div className="text-center py-20">
+  //             Loading products...
+  //           </div>
+
+  //         ) : products.length === 0 ? (
+  //           <div className="text-center py-20 text-gray-500">
+  //             No products found
+  //           </div>
+
+  //         ) : (
+  //           <>
+  //             {/* GRID */}
+
+  //             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+  //               {products.map((p) => (
+  //                 <div
+  //                   key={p._id}
+  //                   className="bg-white rounded-xl shadow overflow-hidden"
+  //                 >
+  //                   {/* IMAGE */}
+
+  //                   <img
+  //                     src={
+  //                       p.image
+  //                         ? `${BASE_URL}${p.image}`
+  //                         : p?.imagelink
+  //                     }
+  //                     alt={p.name}
+  //                     className="w-full h-52 object-cover"
+  //                   />
+
+  //                   {/* CONTENT */}
+
+  //                   <div className="p-4">
+
+  //                     <h2 className="font-bold text-lg">
+  //                       {p.name}
+  //                     </h2>
+
+  //                     <p className="text-sm text-gray-500 line-clamp-2">
+  //                       {p.description}
+  //                     </p>
+
+  //                     <div className="mt-2 text-xs text-gray-400">
+  //                       <p>{p.spcategoryname}</p>
+  //                       <p>{p.sptypename}</p>
+  //                     </div>
+
+  //                     <div className="flex justify-between items-center mt-4">
+
+  //                       <p className="font-bold text-xl">
+  //                         ₹{p.price}
+  //                       </p>
+
+  //                       <button
+  //                         onClick={() => addToCart(p)}
+  //                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+  //                       >
+  //                         Add
+  //                       </button>
+  //                     </div>
+  //                   </div>
+  //                 </div>
+  //               ))}
+  //             </div>
+
+  //             {/* PAGINATION */}
+
+  //             <div className="flex justify-center items-center gap-3 mt-8">
+
+  //               <button
+  //                 disabled={page === 1}
+  //                 onClick={() => setPage(page - 1)}
+  //                 className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
+  //               >
+  //                 Prev
+  //               </button>
+
+  //               <div className="font-semibold">
+  //                 Page {page} / {totalPages}
+  //               </div>
+
+  //               <button
+  //                 disabled={page === totalPages}
+  //                 onClick={() => setPage(page + 1)}
+  //                 className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
+  //               >
+  //                 Next
+  //               </button>
+  //             </div>
+  //           </>
+  //         )}
+  //       </div>
+
+  //       {/* CART */}
+
+  //       <div className="bg-white rounded-xl shadow p-4 h-fit sticky top-24">
+
+  //         <h2 className="text-xl font-bold mb-4">
+  //           Order Cart
+  //         </h2>
+
+  //         {cart.length === 0 ? (
+  //           <p className="text-gray-500">
+  //             No items added
+  //           </p>
+
+  //         ) : (
+  //           <>
+  //             <div className="space-y-3 max-h-[500px] overflow-y-auto">
+
+  //               {cart.map((item) => (
+  //                 <div
+  //                   key={item._id}
+  //                   className="border rounded p-3"
+  //                 >
+  //                   <h3 className="font-semibold">
+  //                     {item.name}
+  //                   </h3>
+
+  //                   <p className="text-sm text-gray-500">
+  //                     ₹{item.price}
+  //                   </p>
+
+  //                   <div className="flex items-center justify-between mt-3">
+
+  //                     <div className="flex items-center gap-2">
+
+  //                       <button
+  //                         onClick={() =>
+  //                           updateQuantity(item._id, "dec")
+  //                         }
+  //                         className="bg-red-500 text-white w-8 h-8 rounded"
+  //                       >
+  //                         -
+  //                       </button>
+
+  //                       <span className="font-bold">
+  //                         {item.quantity}
+  //                       </span>
+
+  //                       <button
+  //                         onClick={() =>
+  //                           updateQuantity(item._id, "inc")
+  //                         }
+  //                         className="bg-green-500 text-white w-8 h-8 rounded"
+  //                       >
+  //                         +
+  //                       </button>
+  //                     </div>
+
+  //                     <div className="font-bold">
+  //                       ₹
+  //                       {item.price * item.quantity}
+  //                     </div>
+  //                   </div>
+  //                 </div>
+  //               ))}
+  //             </div>
+
+  //             {/* TOTAL */}
+
+  //             <div className="mt-4 border-t pt-4">
+
+  //               {/* CUSTOMER MOBILE */}
+
+  //               <div className="mb-4">
+
+  //                 <label className="block text-sm font-medium mb-2">
+  //                   Customer Mobile Number
+  //                 </label>
+
+  //                 <input
+  //                   type="tel"
+  //                   placeholder="Enter mobile number"
+  //                   value={customerMobile}
+  //                   onChange={(e) =>
+  //                     setCustomerMobile(e.target.value)
+  //                   }
+  //                   className="w-full border p-3 rounded-lg"
+  //                   required
+  //                   maxLength={10}
+  //                 />
+  //               </div>
+
+  //               {/* TOTAL */}
+  //               <p>{gstTake ? (<>GST added :  {provider?.additionalDetails?.gst.percent}% </>) : (null)}</p>
+
+  //               <div className="flex justify-between text-lg font-bold">
+  //                 <span>Total</span>
+  //                 <span>₹{totalAmount}</span>
+  //               </div>
+
+  //               {/* PAYMENT METHOD */}
+
+  //               <div className="mb-4">
+
+  //                 <label className="block text-sm font-medium mb-2">
+  //                   Payment Method
+  //                 </label>
+
+  //                 <div className="space-y-2">
+
+  //                   {/* PAY AT COUNTER */}
+
+  //                   <label className="flex items-center gap-2 border p-3 rounded-lg cursor-pointer">
+
+  //                     <input
+  //                       type="radio"
+  //                       name="paymentMethod"
+  //                       value="pay_at_counter"
+  //                       checked={
+  //                         paymentMethod === "pay_at_counter"
+  //                       }
+  //                       onChange={(e) =>
+  //                         setPaymentMethod(e.target.value)
+  //                       }
+  //                     />
+
+  //                     <span>Pay At Counter</span>
+  //                   </label>
+
+  //                   {/* ONLINE */}
+
+  //                   <label className="flex items-center gap-2 border p-3 rounded-lg cursor-pointer">
+
+  //                     <input
+  //                       type="radio"
+  //                       name="paymentMethod"
+  //                       value="online"
+  //                       checked={paymentMethod === "online"}
+  //                       onChange={(e) =>
+  //                         setPaymentMethod(e.target.value)
+  //                       }
+  //                     />
+
+  //                     <span>Pay Online</span>
+  //                   </label>
+  //                 </div>
+  //               </div>
+
+  //               {/* BUTTON */}
+
+  //               <button
+  //                 onClick={placeOrder}
+  //                 className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold"
+  //               >
+  //                 Place Order
+  //               </button>
+  //             </div>
+  //           </>
+  //         )}
+  //       </div>
+  //     </div>
+
+
+  //     {successToken && (
+  //       <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+
+  //         <div className="bg-white p-10 rounded-2xl text-center">
+
+  //           <h2 className="text-2xl font-bold mb-4">
+  //             Order Placed
+  //           </h2>
+
+  //           <p className="text-gray-500 mb-2">
+  //             Your Token Number
+  //           </p>
+
+  //           <div className="text-6xl font-bold text-blue-600">
+  //             #{successToken}
+  //           </div>
+
+  //           <button
+  //             onClick={() => setSuccessToken(null)}
+  //             className="mt-6 bg-blue-600 text-white px-6 py-2 rounded"
+  //           >
+  //             Close
+  //           </button>
+  //         </div>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
 
       {/* HEADER */}
 
-      <div className="bg-white shadow sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto p-4 flex justify-between items-center">
+      <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800">
               {provider?.name || "Provider"}
             </h1>
 
-            <p className="text-gray-500 text-sm">
+            <p className="text-xs md:text-sm text-gray-500">
               Self Ordering Kiosk
             </p>
           </div>
 
-          <div className="bg-blue-600 text-white px-4 py-2 rounded-full">
-            Cart ({cart.length})
-          </div>
+          <div onClick={() => setCartOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm md:text-base font-semibold shadow">
+          🛒 {cart.length}
         </div>
-      </div>
+          {/* <div className="fixed bottom-4 right-4 xl:hidden z-40">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="bg-blue-600 text-white px-5 py-3 rounded-full shadow-lg font-bold"
+            >
+              🛒 Cart ({cart.length})
+            </button>
+          </div> */}
+        </div>
+      </header>
 
-      {/* BODY */}
+      {/* MAIN */}
 
-      <div className="max-w-7xl mx-auto p-4 grid md:grid-cols-4 gap-4">
+      <div className="max-w-7xl mx-auto p-3 md:p-4 grid grid-cols-1 xl:grid-cols-4 gap-4">
 
         {/* LEFT SIDE */}
 
-        <div className="md:col-span-3">
+        <div className="xl:col-span-3">
 
           {/* FILTERS */}
 
-          <div className="bg-white p-4 rounded-xl shadow mb-4 space-y-4">
+          <div className="bg-white rounded-2xl shadow-sm border p-4 mb-4 space-y-4">
 
             {/* SEARCH */}
 
             <input
               type="text"
               placeholder="Search products..."
-              className="w-full border p-3 rounded"
+              className="w-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none p-3 rounded-xl text-sm md:text-base"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -439,33 +868,21 @@ export default function ProviderKioskPage() {
               }}
             />
 
-            {/* DROPDOWNS */}
+            {/* FILTERS */}
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 
               {/* CATEGORY */}
 
               <select
-                className="border p-3 rounded"
+                className="border border-gray-200 p-3 rounded-xl bg-white text-sm md:text-base"
                 value={selectedCategory}
                 onChange={(e) => {
                   setSelectedCategory(e.target.value);
                   setPage(1);
                 }}
               >
-                <option value="">
-                  All Categories
-                </option>
-
-                {/* {categories.map((c) => (
-                  <option
-                    key={c._id}
-                    value={c.spcategoryid}
-                  >
-                    {c.name}
-                  </option>
-                ))}*/}
-
+                <option value="">All Categories</option>
 
                 {categories
                   .filter(
@@ -478,32 +895,20 @@ export default function ProviderKioskPage() {
                       {c.name}
                     </option>
                   ))}
-
-
               </select>
 
               {/* TYPE */}
 
               <select
-                className="border p-3 rounded"
+                className="border border-gray-200 p-3 rounded-xl bg-white text-sm md:text-base"
                 value={selectedType}
                 onChange={(e) => {
                   setSelectedType(e.target.value);
                   setPage(1);
                 }}
               >
-                <option value="">
-                  All Types
-                </option>
+                <option value="">All Types</option>
 
-                {/* {types.map((t) => (
-                  <option
-                    key={t._id}
-                    value={t.sptypeid}
-                  >
-                    {t.name}
-                  </option>
-                ))} */}
                 {types
                   .filter(
                     (t) =>
@@ -511,10 +916,7 @@ export default function ProviderKioskPage() {
                       allowedTypes.includes(t.name)
                   )
                   .map((t) => (
-                    <option
-                      key={t._id}
-                      value={t.sptypeid}
-                    >
+                    <option key={t._id} value={t.sptypeid}>
                       {t.name}
                     </option>
                   ))}
@@ -525,64 +927,65 @@ export default function ProviderKioskPage() {
           {/* PRODUCTS */}
 
           {loading ? (
-            <div className="text-center py-20">
+            <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
               Loading products...
             </div>
-
           ) : products.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
+            <div className="bg-white rounded-2xl p-10 text-center text-gray-500 shadow-sm">
               No products found
             </div>
-
           ) : (
             <>
-              {/* GRID */}
+              {/* PRODUCT GRID */}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
 
                 {products.map((p) => (
                   <div
                     key={p._id}
-                    className="bg-white rounded-xl shadow overflow-hidden"
+                    className="bg-white rounded-2xl overflow-hidden shadow-sm border hover:shadow-md transition-all duration-200"
                   >
+
                     {/* IMAGE */}
 
-                    <img
-                      src={
-                        p.image
-                          ? `${BASE_URL}${p.image}`
-                          : p?.imagelink
-                      }
-                      alt={p.name}
-                      className="w-full h-52 object-cover"
-                    />
+                    <div className="aspect-square bg-gray-100 overflow-hidden">
+                      <img
+                        src={
+                          p.image
+                            ? `${BASE_URL}${p.image}`
+                            : p?.imagelink
+                        }
+                        alt={p.name}
+                        className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                      />
+                    </div>
 
                     {/* CONTENT */}
 
-                    <div className="p-4">
+                    <div className="p-3 md:p-4">
 
-                      <h2 className="font-bold text-lg">
+                      <h2 className="font-semibold text-sm md:text-lg line-clamp-1">
                         {p.name}
                       </h2>
 
-                      <p className="text-sm text-gray-500 line-clamp-2">
+                      <p className="text-xs md:text-sm text-gray-500 line-clamp-2 mt-1">
                         {p.description}
                       </p>
 
-                      <div className="mt-2 text-xs text-gray-400">
+                      <div className="mt-2 text-[11px] md:text-xs text-gray-400">
                         <p>{p.spcategoryname}</p>
                         <p>{p.sptypename}</p>
                       </div>
 
-                      <div className="flex justify-between items-center mt-4">
+                      <div className="flex items-center justify-between mt-4 gap-2">
 
-                        <p className="font-bold text-xl">
+                        <p className="font-bold text-base md:text-xl text-gray-900">
                           ₹{p.price}
                         </p>
 
                         <button
                           onClick={() => addToCart(p)}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                          className="bg-blue-600 hover:bg-blue-700 active:scale-95 transition text-white px-3 md:px-4 py-2 rounded-xl text-sm font-semibold"
                         >
                           Add
                         </button>
@@ -599,19 +1002,19 @@ export default function ProviderKioskPage() {
                 <button
                   disabled={page === 1}
                   onClick={() => setPage(page - 1)}
-                  className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-white border shadow-sm disabled:opacity-50"
                 >
                   Prev
                 </button>
 
-                <div className="font-semibold">
-                  Page {page} / {totalPages}
+                <div className="font-semibold text-sm md:text-base">
+                  {page} / {totalPages}
                 </div>
 
                 <button
                   disabled={page === totalPages}
                   onClick={() => setPage(page + 1)}
-                  className="bg-gray-300 px-4 py-2 rounded disabled:opacity-50"
+                  className="px-4 py-2 rounded-xl bg-white border shadow-sm disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -622,48 +1025,61 @@ export default function ProviderKioskPage() {
 
         {/* CART */}
 
-        <div className="bg-white rounded-xl shadow p-4 h-fit sticky top-24">
+        <div className="xl:sticky xl:top-24 h-fit">
 
-          <h2 className="text-xl font-bold mb-4">
-            Order Cart
-          </h2>
+          <div className="bg-white rounded-2xl shadow-sm border p-4">
 
-          {cart.length === 0 ? (
-            <p className="text-gray-500">
-              No items added
-            </p>
+            <h2 className="text-lg md:text-xl font-bold mb-4">
+              Order Cart
+            </h2>
 
-          ) : (
-            <>
-              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+            {cart.length === 0 ? (
+              <div className="text-center py-10 text-gray-500">
+                No items added
+              </div>
+            ) : (
+              <>
+                {/* CART ITEMS */}
 
-                {cart.map((item) => (
-                  <div
-                    key={item._id}
-                    className="border rounded p-3"
-                  >
-                    <h3 className="font-semibold">
-                      {item.name}
-                    </h3>
+                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-1">
 
-                    <p className="text-sm text-gray-500">
-                      ₹{item.price}
-                    </p>
+                  {cart.map((item) => (
+                    <div
+                      key={item._id}
+                      className="border rounded-2xl p-3"
+                    >
 
-                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex justify-between gap-2">
 
-                      <div className="flex items-center gap-2">
+                        <div>
+                          <h3 className="font-semibold text-sm md:text-base">
+                            {item.name}
+                          </h3>
+
+                          <p className="text-xs md:text-sm text-gray-500">
+                            ₹{item.price}
+                          </p>
+                        </div>
+
+                        <div className="font-bold text-sm md:text-base">
+                          ₹{item.price * item.quantity}
+                        </div>
+                      </div>
+
+                      {/* QUANTITY */}
+
+                      <div className="flex items-center justify-center gap-3 mt-4">
 
                         <button
                           onClick={() =>
                             updateQuantity(item._id, "dec")
                           }
-                          className="bg-red-500 text-white w-8 h-8 rounded"
+                          className="w-10 h-10 rounded-xl bg-red-500 text-white text-lg font-bold active:scale-95"
                         >
-                          -
+                          −
                         </button>
 
-                        <span className="font-bold">
+                        <span className="font-bold text-lg w-8 text-center">
                           {item.quantity}
                         </span>
 
@@ -671,137 +1087,300 @@ export default function ProviderKioskPage() {
                           onClick={() =>
                             updateQuantity(item._id, "inc")
                           }
-                          className="bg-green-500 text-white w-8 h-8 rounded"
+                          className="w-10 h-10 rounded-xl bg-green-500 text-white text-lg font-bold active:scale-95"
                         >
                           +
                         </button>
                       </div>
+                    </div>
+                  ))}
+                </div>
 
-                      <div className="font-bold">
-                        ₹
-                        {item.price * item.quantity}
-                      </div>
+                {/* FORM */}
+
+                <div className="border-t mt-4 pt-4 space-y-4">
+
+                  {/* MOBILE */}
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Mobile Number
+                    </label>
+
+                    <input
+                      type="tel"
+                      placeholder="Enter mobile number"
+                      value={customerMobile}
+                      onChange={(e) =>
+                        setCustomerMobile(e.target.value)
+                      }
+                      className="w-full border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none p-3 rounded-xl"
+                      maxLength={10}
+                    />
+                  </div>
+
+                  {/* GST */}
+
+                  {gstTake && (
+                    <div className="text-sm text-gray-500">
+                      GST Added:{" "}
+                      <span className="font-semibold">
+                        {provider?.additionalDetails?.gst.percent}%
+                      </span>
+                    </div>
+                  )}
+
+                  {/* TOTAL */}
+
+                  <div className="bg-gray-50 rounded-2xl p-4 flex justify-between items-center">
+
+                    <span className="text-lg font-semibold">
+                      Total
+                    </span>
+
+                    <span className="text-2xl font-bold text-green-600">
+                      ₹{totalAmount}
+                    </span>
+                  </div>
+
+                  {/* PAYMENT */}
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Payment Method
+                    </label>
+
+                    <div className="grid grid-cols-1 gap-3">
+
+                      <label className="border rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-blue-500">
+
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="pay_at_counter"
+                          checked={
+                            paymentMethod === "pay_at_counter"
+                          }
+                          onChange={(e) =>
+                            setPaymentMethod(e.target.value)
+                          }
+                        />
+
+                        <span className="font-medium">
+                          Pay At Counter
+                        </span>
+                      </label>
+
+                      <label className="border rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-blue-500">
+
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="online"
+                          checked={paymentMethod === "online"}
+                          onChange={(e) =>
+                            setPaymentMethod(e.target.value)
+                          }
+                        />
+
+                        <span className="font-medium">
+                          Pay Online
+                        </span>
+                      </label>
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* TOTAL */}
+                  {/* BUTTON */}
 
-              <div className="mt-4 border-t pt-4">
-
-                {/* CUSTOMER MOBILE */}
-
-                <div className="mb-4">
-
-                  <label className="block text-sm font-medium mb-2">
-                    Customer Mobile Number
-                  </label>
-
-                  <input
-                    type="tel"
-                    placeholder="Enter mobile number"
-                    value={customerMobile}
-                    onChange={(e) =>
-                      setCustomerMobile(e.target.value)
-                    }
-                    className="w-full border p-3 rounded-lg"
-                    required
-                    maxLength={10}
-                  />
+                  <button
+                    onClick={placeOrder}
+                    className="w-full bg-green-600 hover:bg-green-700 active:scale-[0.98] transition text-white py-4 rounded-2xl text-lg font-bold shadow"
+                  >
+                    Place Order
+                  </button>
                 </div>
+              </>
+            )}
+          </div>
+        </div>
 
-                {/* TOTAL */}
-                <p>{gstTake ? (<>GST added :  {provider?.additionalDetails?.gst.percent}% </>) : (null)}</p>
+        {cartOpen && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-end xl:items-center">
 
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span>₹{totalAmount}</span>
-                </div>
+            <div className="bg-white w-full xl:max-w-md xl:rounded-2xl rounded-t-3xl max-h-[90vh] overflow-y-auto p-4">
 
-                {/* PAYMENT METHOD */}
-
-                <div className="mb-4">
-
-                  <label className="block text-sm font-medium mb-2">
-                    Payment Method
-                  </label>
-
-                  <div className="space-y-2">
-
-                    {/* PAY AT COUNTER */}
-
-                    <label className="flex items-center gap-2 border p-3 rounded-lg cursor-pointer">
-
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="pay_at_counter"
-                        checked={
-                          paymentMethod === "pay_at_counter"
-                        }
-                        onChange={(e) =>
-                          setPaymentMethod(e.target.value)
-                        }
-                      />
-
-                      <span>Pay At Counter</span>
-                    </label>
-
-                    {/* ONLINE */}
-
-                    <label className="flex items-center gap-2 border p-3 rounded-lg cursor-pointer">
-
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="online"
-                        checked={paymentMethod === "online"}
-                        onChange={(e) =>
-                          setPaymentMethod(e.target.value)
-                        }
-                      />
-
-                      <span>Pay Online</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* BUTTON */}
+              {/* HEADER */}
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold">
+                  Order Cart
+                </h2>
 
                 <button
-                  onClick={placeOrder}
-                  className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-bold"
+                  onClick={() => setCartOpen(false)}
+                  className="text-gray-500 text-xl"
                 >
-                  Place Order
+                  ✕
                 </button>
               </div>
-            </>
-          )}
-        </div>
+
+              {/* ===== YOUR ORIGINAL CART CONTENT START ===== */}
+
+              {cart.length === 0 ? (
+                <div className="text-center py-10 text-gray-500">
+                  No items added
+                </div>
+              ) : (
+                <>
+                  {/* CART ITEMS */}
+                  <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+
+                    {cart.map((item) => (
+                      <div key={item._id} className="border rounded-2xl p-3">
+
+                        <div className="flex justify-between gap-2">
+
+                          <div>
+                            <h3 className="font-semibold text-sm md:text-base">
+                              {item.name}
+                            </h3>
+
+                            <p className="text-xs text-gray-500">
+                              ₹{item.price}
+                            </p>
+                          </div>
+
+                          <div className="font-bold">
+                            ₹{item.price * item.quantity}
+                          </div>
+                        </div>
+
+                        {/* QUANTITY */}
+                        <div className="flex items-center justify-center gap-3 mt-3">
+
+                          <button
+                            onClick={() => updateQuantity(item._id, "dec")}
+                            className="w-10 h-10 rounded-xl bg-red-500 text-white font-bold"
+                          >
+                            −
+                          </button>
+
+                          <span className="font-bold">
+                            {item.quantity}
+                          </span>
+
+                          <button
+                            onClick={() => updateQuantity(item._id, "inc")}
+                            className="w-10 h-10 rounded-xl bg-green-500 text-white font-bold"
+                          >
+                            +
+                          </button>
+
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* FORM */}
+                  <div className="border-t mt-4 pt-4 space-y-4">
+
+                    {/* MOBILE */}
+                    <input
+                      type="tel"
+                      placeholder="Enter mobile number"
+                      value={customerMobile}
+                      onChange={(e) => setCustomerMobile(e.target.value)}
+                      className="w-full border p-3 rounded-xl"
+                      maxLength={10}
+                    />
+
+                    {/* GST */}
+                    {gstTake && (
+                      <div className="text-sm text-gray-500">
+                        GST Added: {provider?.additionalDetails?.gst.percent}%
+                      </div>
+                    )}
+
+                    {/* TOTAL */}
+                    <div className="flex justify-between bg-gray-50 p-3 rounded-xl font-bold">
+                      <span>Total</span>
+                      <span className="text-green-600">
+                        ₹{totalAmount}
+                      </span>
+                    </div>
+
+                    {/* PAYMENT */}
+                    <div className="space-y-2">
+
+                      <label className="flex gap-2 items-center border p-3 rounded-xl">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="pay_at_counter"
+                          checked={paymentMethod === "pay_at_counter"}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        Pay At Counter
+                      </label>
+
+                      <label className="flex gap-2 items-center border p-3 rounded-xl">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="online"
+                          checked={paymentMethod === "online"}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        Pay Online
+                      </label>
+
+                    </div>
+
+                    {/* BUTTON */}
+                    <button
+                      onClick={() => {
+                        placeOrder();
+                        setCartOpen(false);
+                      }}
+                      className="w-full bg-green-600 text-white py-4 rounded-2xl font-bold"
+                    >
+                      Place Order
+                    </button>
+
+                  </div>
+
+                  {/* ===== YOUR ORIGINAL CART CONTENT END ===== */}
+                </>
+              )}
+
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* SUCCESS MODAL */}
 
       {successToken && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
 
-          <div className="bg-white p-10 rounded-2xl text-center">
+          <div className="bg-white w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl">
 
-            <h2 className="text-2xl font-bold mb-4">
+            <div className="text-5xl mb-4">🎉</div>
+
+            <h2 className="text-2xl font-bold mb-2">
               Order Placed
             </h2>
 
-            <p className="text-gray-500 mb-2">
+            <p className="text-gray-500 mb-6">
               Your Token Number
             </p>
 
-            <div className="text-6xl font-bold text-blue-600">
+            <div className="text-6xl font-black text-blue-600">
               #{successToken}
             </div>
 
             <button
               onClick={() => setSuccessToken(null)}
-              className="mt-6 bg-blue-600 text-white px-6 py-2 rounded"
+              className="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-semibold"
             >
               Close
             </button>

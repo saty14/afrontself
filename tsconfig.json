@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "proxy.js", "app/(web)/register/page.jsx", "app/(web)/provider-res/page.jsx"  ],
+, "proxy.js", "app/(web)/register/page.jsx", "app/(web)/provider-res/page.jsx", "app/me-super-admin/layout.jsx"  ],
   "exclude": ["node_modules"]
 }

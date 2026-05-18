@@ -2,14 +2,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function ProviderAnalyticsPage() {
 
   const BASE_URL =
     process.env.NEXT_PUBLIC_BACKEN_BASE_URL;
+      const { sprovid } = useParams();
 
   const [cookies, setCookies] = useState({
-    id: null,
+    id: sprovid,
   });
 
   const [orders, setOrders] = useState([]);
@@ -34,6 +36,8 @@ export default function ProviderAnalyticsPage() {
       const data = await res.json();
 
       setCookies(data);
+
+       setCookies({ id: sprovid })
     }
 
     fetchCookies();

@@ -285,6 +285,8 @@ export default function ProviderOrdersPage() {
                     <option>Pending</option>
                     <option>Preparing</option>
                     <option>Completed</option>
+                    <option disabled>Cancelled</option>
+                    
                   </select>
 
                   <select

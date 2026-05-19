@@ -32,6 +32,8 @@ export default function ProviderKioskPage() {
   const [successToken, setSuccessToken] = useState(null);
   const [gstTake, setGstTake] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [sprovname, setSprovname] = useState("");
+  
 
 
   const LIMIT = 2;
@@ -51,6 +53,7 @@ export default function ProviderKioskPage() {
 
         if (data.success) {
           setProvider(data.provider);
+         
         }
       } catch (err) {
         console.log(err);
@@ -143,6 +146,7 @@ export default function ProviderKioskPage() {
   function addToCart(product) {
     const exists = cart.find((c) => c._id === product._id);
     setGstTake(provider?.additionalDetails?.gst?.accept)
+    setSprovname(provider?.name); 
 
 
     if (exists) {
@@ -287,6 +291,7 @@ export default function ProviderKioskPage() {
 
       const payload = {
         sprovid,
+        sprovname,
 
         customerMobile,
         paymentMethod,

@@ -37,7 +37,7 @@ export default function LogoutPage() {
           // Cookies.remove("role");
           // Cookies.remove("id");
 
-          router.push("/login");
+          router.push("/login-provider");
         } catch (error) {
           console.error("Logout Error:", error);
         }

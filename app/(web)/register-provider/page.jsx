@@ -1,16 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function RegisterPage() {
+  // const [form, setForm] = useState({
+  //   name: "",
+  //   email: "",
+  //   mobile:"",
+  //   password: "",
+  // });
   const [form, setForm] = useState({
     name: "",
     email: "",
-    mobile:"",
+    mobile: "",
     password: "",
+    cityId: "",
+    localAreaId: "",
+    serviceIds: [],
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [cities, setCities] = useState([]);
+  const [localAreas, setLocalAreas] = useState([]);
+  const [services, setServices] = useState([]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -37,8 +49,8 @@ export default function RegisterPage() {
       }
 
       setMessage("Registration successful! Check your email for OTP.");
-      setForm({ name: "", email: "",  mobile:"", password: "" });
-         setTimeout(() => {
+      setForm({ name: "", email: "", mobile: "", password: "" });
+      setTimeout(() => {
         window.location.href = "/email-verify-provider";
       }, 2000);
 
@@ -48,6 +60,25 @@ export default function RegisterPage() {
       console.error("Register error:", error);
     }
   };
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEN_BASE_URL}/api/city`)
+      .then(res => res.json())
+      .then(data => setCities(data.citys || []));
+  }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEN_BASE_URL}/api/services`)
+      .then(res => res.json())
+      .then(data => setServices(data.services || []));
+  }, []);
+  useEffect(() => {
+    if (!form.cityId) return;
+
+    fetch(`${process.env.NEXT_PUBLIC_BACKEN_BASE_URL}/api/local-aria?cityId=${form.cityId}`)
+      .then(res => res.json())
+      .then(data => setLocalAreas(data.localAreas || []));
+  }, [form.cityId]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -83,8 +114,8 @@ export default function RegisterPage() {
           />
         </label>
 
-        
-           {/* MOBILE INPUT */}
+
+        {/* MOBILE INPUT */}
         <label className="block mb-4">
           <span className="block text-sm font-medium">Mobile</span>
           <input
@@ -109,6 +140,45 @@ export default function RegisterPage() {
             required
           />
         </label>
+
+
+
+        <select name="cityId" className="mt-1 w-full p-2 border rounded-lg mt-4" value={form.cityId} onChange={handleChange}>
+          <option value="">Select City</option>
+          {cities.map((c) => (
+            <option key={c._id} value={c.sctyid}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select name="localAreaId" className="mt-1 w-full p-2 border rounded-lg mt-4" value={form.localAreaId} onChange={handleChange}>
+          <option value="">Select Local Area</option>
+          {localAreas.map((l) => (
+            <option key={l._id} value={l.sloctyid}>
+              {l.name}
+            </option>
+          ))}
+        </select>
+        <select
+          multiple
+          className="mt-1 w-full p-2 border rounded-lg mt-4 mb-6"
+          name="serviceIds"
+          value={form.serviceIds}
+          onChange={(e) => {
+            const values = Array.from(e.target.selectedOptions, opt => opt.value);
+            setForm({ ...form, serviceIds: values });
+          }}
+        >
+          {/* <option value="">Select  Service</option> */}
+          {services.map((s) => (
+            <option key={s._id} value={s.ssrvcid}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+
+
+
 
         <button
           type="submit"

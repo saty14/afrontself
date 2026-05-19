@@ -72,6 +72,9 @@ export default function OrderDetailsPage() {
           <h1 className="text-3xl font-bold">
             Token #{order.tokenNumber}
           </h1>
+          <p className="text-gray-500 text-sm">
+            Provider :  {order.sprovname}
+          </p>
 
           <p className="text-gray-500">
             {new Date(

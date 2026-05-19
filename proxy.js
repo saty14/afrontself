@@ -10,7 +10,7 @@ export async function proxy(request) {
   // 1️⃣ Not logged in → redirect
   // -----------------------------
   if (!token || !role || !id) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/login-provider", request.url));
   }
 
   // -----------------------------------------
@@ -39,7 +39,7 @@ export async function proxy(request) {
   
   } catch (error) {
     console.error("Token verify failed:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/login-provider", request.url));
   }
 
   // -----------------------------
@@ -47,7 +47,7 @@ export async function proxy(request) {
   // -----------------------------
   // Backend must send: { valid: true/false }
   if (!result.valid) {
-    const response = NextResponse.redirect(new URL("/login", request.url));
+    const response = NextResponse.redirect(new URL("/login-provider", request.url));
     response.cookies.delete("token");
     response.cookies.delete("id");
     response.cookies.delete("role");

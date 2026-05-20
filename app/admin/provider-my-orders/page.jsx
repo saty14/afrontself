@@ -14,6 +14,9 @@ export default function ProviderOrdersPage() {
   const [cookies, setCookies] = useState({ id: null });
 
   const [editingOrder, setEditingOrder] = useState(null);
+    const [queOpen, setQueOpen] = useState(false);
+  const [queueOrders, setQueueOrders] = useState([]);
+  const [queueLoading, setQueueLoading] = useState(false);
 
   const [filters, setFilters] = useState({
     status: "All",
@@ -155,6 +158,29 @@ export default function ProviderOrdersPage() {
     }
   }
 
+    async function fetchQueueOrders() {
+    try {
+
+      setQueueLoading(true);
+
+      const res = await fetch(
+        `${BASE_URL}/api/order/queue/${cookies.id}`
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setQueueOrders(data.orders || []);
+      }
+
+    } catch (err) {
+      console.log(err);
+
+    } finally {
+      setQueueLoading(false);
+    }
+  }
+
   // ==============================
   // UI
   // ==============================
@@ -219,6 +245,17 @@ export default function ProviderOrdersPage() {
           >
             Reset
           </button>
+           <button
+            className="bg-black text-white rounded p-2"
+           onClick={() => {
+                setQueOpen(true);
+                fetchQueueOrders();
+              }}
+          >
+            Queue
+          </button>
+
+          
         </div>
 
         {/* LOADING */}
@@ -310,7 +347,25 @@ export default function ProviderOrdersPage() {
                       className="flex justify-between border p-2 rounded"
                     >
                       <span>{item.name}</span>
-                      <span>Qty: {item.quantity}</span>
+                      {/* <span>Qty:{item.quantity} x Price:{item.price} </span> */}
+                   
+                     <div className="flex items-center gap-2 text-sm">
+                        <span className="rounded bg-blue-100 px-2 py-1 text-blue-700 font-medium">
+                          Qty: {item.quantity}
+                        </span>
+
+                        <span className="text-gray-400">×</span>
+
+                        <span className="font-bold text-gray-600">
+                          ₹{Number(item.price).toFixed(2)}
+                        </span> 
+                        <span className="font-bold text-gray-600">
+                         =
+                        </span> 
+                        <span className="font-bold text-green-600">
+                            ₹{(Number(item.quantity) * Number(item.price)).toFixed(2)}
+                          </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -408,6 +463,165 @@ export default function ProviderOrdersPage() {
         )}
 
       </div>
+        {queOpen && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-end xl:items-center">
+
+            <div className="bg-white w-full xl:max-w-md xl:rounded-2xl rounded-t-3xl max-h-[90vh] overflow-y-auto p-4">
+
+              {/* HEADER */}
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold">
+                  Orders in Queue
+                </h2>
+
+                <button
+                  onClick={() => setQueOpen(false)}
+                  className="text-gray-500 text-xl"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* ===== YOUR ORIGINAL Orders in Queue CONTENT START ===== */}
+
+              {queueLoading ? (
+
+                <div className="text-center py-10">
+                  Loading queue...
+                </div>
+
+              ) : queueOrders.length === 0 ? (
+
+                <div className="text-center py-10 text-gray-500">
+                  No active orders
+                </div>
+
+              ) : (
+
+                <div className="space-y-3">
+
+                  {queueOrders.map((order, index) => (
+
+                    <div
+                      key={order._id}
+                      className="border rounded-2xl p-4"
+                    >
+
+                      {/* TOP */}
+
+                      <div className="flex justify-between items-center">
+
+                        <div>
+
+                          <p className="text-xs text-gray-500">
+                            Token
+                          </p>
+
+                          <h2 className="text-3xl font-black text-blue-600">
+                            #{order.tokenNumber}
+                          </h2>
+                        </div>
+
+                        <div className="text-right">
+
+                          <span
+                            className={`
+                px-3 py-1 rounded-full text-xs font-semibold
+                ${order.orderStatus === "Pending"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : ""}
+                ${order.orderStatus === "Accepted"
+                                ? "bg-blue-100 text-blue-700"
+                                : ""}
+                ${order.orderStatus === "Preparing"
+                                ? "bg-orange-100 text-orange-700"
+                                : ""}
+                ${order.orderStatus === "Ready"
+                                ? "bg-green-100 text-green-700"
+                                : ""}
+              `}
+                          >
+                            {order.orderStatus}
+                          </span>
+
+                          <p className="text-xs text-gray-400 mt-2">
+                            Queue #{queueOrders.length - index}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* ITEMS */}
+
+                       {/* <div className="mt-3 space-y-1">
+
+                        {order.items?.slice(0, 3).map((item, i) => (
+                          <div
+                            key={i}
+                            className="flex justify-between text-sm"
+                          >
+                            <span>
+                              {item.name} × {item.quantity}
+                            </span>
+
+                            <span>
+                              ₹{item.price * item.quantity}
+                            </span>
+                          </div>
+                        ))}
+
+                        {order.items?.length > 3 && (
+                          <p className="text-xs text-gray-400">
+                            +{order.items.length - 3} more items
+                          </p>
+                        )}
+                      </div>  */}
+                       <div className="mt-3 space-y-1">
+
+                        {order.items?.slice(0, 100).map((item, i) => (
+                          <div
+                            key={i}
+                            className="flex justify-between text-sm"
+                          >
+                            <span>
+                              {item.name} × {item.quantity}
+                            </span>
+
+                            <span>
+                              ₹{item.price * item.quantity}
+                            </span>
+                          </div>
+                        ))}
+
+                        {order.items?.length > 100 && (
+                          <p className="text-xs text-gray-400">
+                            +{order.items.length - 3} more items
+                          </p>
+                        )}
+                      </div> 
+
+                      {/* FOOTER */}
+
+                      <div className="mt-3 pt-3 border-t flex justify-between items-center">
+
+                        <div className="text-sm text-gray-500">
+                          {new Date(order.createdAt).toLocaleTimeString()}
+                        </div>
+
+                         <div className="font-bold text-green-600">
+                          ₹{order.totalAmount}
+                        </div> 
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+
+
+            </div>
+          </div>
+        )}
+
     </div>
   );
 }
